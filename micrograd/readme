@@ -1,1 +1,64 @@
+Building micrograd
+Gradient- a guide that tells us how to adjust weights to improve our predictions. 
+Loss function- tells us how good gradient is doing.
+Micrograd is a library which has automatic gradient function
+allows users to iteratively tune the neural network's weights to minimize the loss function, this improves the efficiency of the model
+
+Core algorithm used in this: back propagation
+After NN passes forward, backward function can be called to implement this
+Works by recursively applying chain rule to compute the gradients of all internal nodes and input values with respect to the output value
+
+Calculating derivative of single input functions: its found that by making small changes to function at different points, different results are obtained. Using this we get how the function behaves in different regions, and also get the steepness of curve etc; also helps optomize
+
+Creation of value object- holds a single scalar and can perform operations on it
+Expression graph- allows us to trace mathematical flow, made on graphviz. Is built by recursively traversin value object.
+
+Manual backprop eg 1
+Derivative of a variable is always the variable itself 9???)
+Gradients can be calculated numerically- note changes in op wrt input
+Chain rule is used for composite functions- as changes are interdependent
+Backpropgation- calculates the gradient of op with respect to each intermediate note by applying chain rule recursively- from op to each intermediate node
+Gradients for intermediate nodes are calculated by finding local derivative and multiplying it with the node’s output gradient wrt parent node. Local derivatives are computed using chain rule. This is done recursively for all nodes
+These gradients are verified by altering input variables in the same direction of input and observing patterns in output
+
+Backpropogation through a neuron
+Neurons have inputs, synapses with weights which connect with next neuron (transmission)
+Mathematically to represent neurons; input * weight = bias. 
+Bias forms raw activation of neuron
+Eg for activation function: tanh (other examples include sigmoid, relu, softmax, etc)
+Tanh is chosen because hidden layers graphs are usually symmetric around 0 and tanh is used for mapping inputs between -1 and 1 (MAYHAPS)
+Value class is used in this context to represent operations and intermediate values- it tracks data and gradient for each node.
+Step 1: forward propagation
+input*weigh=bias. Next, tanh is applied to bias. This gives output
+
+Step 2: backpropogation
+Initial gradient is set to 1 always, because it is base case
+Local derivative of tanh(n)=1 - tanh(n)2.
+Therefore gradient= 1#(initial gradient) * 1-tanh(n)
+This gradient is considered initial gradient for next layer and is propagated backward 
+Process ends when gradients for all parameters are calculated
+
+implementing the backward function for each operation
+For plus op: local derivative of plus is 1, so self and other will both vary directly with every change in outs.
+During forward propagation, when we perform the plus operation (e.g., result = a + b), we get an output result by adding two inputs a and b.
+Now, during backward propagation (backpropagation), we need to figure out how much each input (a and b) contributed to the final output result. To do this, we calculate gradients, which represent how sensitive the output is to changes in each input.
+For the plus operation, the local derivative of the plus operation with respect to each input (a and b) is 1.0. This means that any change in the output (result) will directly affect both a and b.
+So, during backpropagation, we update the gradients of a and b (stored as self.grad and other.grad, respectively) by multiplying the gradient of the output result.grad with the local derivative of the plus operation (which is 1.0 for both a and b). This way, we can pass the error backward through the plus operation and update the model's parameters accordingly.
+
+
+For times operation:
+1) forward propagation- outs= self * other
+2) back propagation- local derivative of times wrt self- other.data
+So, self.grad = outs.grad * other.data
+local derivative of the times operation with respect to other is self.data.
+So, other.grad = outs.grad * self.data.
+This means any change in the output outs will directly affect both self and other.
+
+Backward pass is set by setting initial gradient of 1 to output node. Rule: all leaf nodes are initialized with a gradient of 1 because they are starting points.
+Parameters are updated after backward pass.
+
+implementing the backward function for the entire expression graph
+Always do topological sort before backward pass- ensures that nodes are processed in the correct order for backpropagation; guarantees that a node's gradient is computed only after all its dependencies' gradients have been calculated.
+Clean up code by rerouting back propagation function to value class
+Automate it for the entire function
 
