@@ -1,0 +1,9 @@
+Backpropagation is a supervised learning algorithm for training multi-layer perceptrons (artificial neural networks). The algorithm is used to adjust the weights of the neural network so that the output will be closer and closer to the real target. The goal of backpropagation is to minimize the error between the predicted output and the actual output.
+
+When designing a neural network, we initialize weights with some random values. However, it’s not necessary that whatever weight values we have selected will be correct or fit our model the best. To reduce the error, we need to somehow explain the model to change the parameters (weights), such that error becomes minimum. This process is called training our model. One way to train our model is called backpropagation.
+
+The backpropagation algorithm works by propagating errors backward through the network. It calculates the gradient of the error function with respect to each weight in the network. The gradient tells us how much we need to adjust each weight in order to reduce the error.
+
+The algorithm starts by feeding an input into the network and propagating it forward through each layer until it produces an output. The output is then compared to the actual output, and an error is calculated. The error is then propagated backward through the network, and each weight is adjusted based on its contribution to the error.
+
+The backpropagation algorithm uses a technique called gradient descent to adjust the weights. Gradient descent is an optimization algorithm that tries to find the minimum of a function by iteratively moving in the direction of steepest descent. In other words, it tries to find the direction in which the function decreases most rapidly and moves in that direction.
